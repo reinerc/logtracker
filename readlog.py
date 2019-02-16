@@ -1,7 +1,10 @@
 import datetime
 import pandas as pd
 
-f = open("syslog","r")
+path = "/var/log/"
+#path = ""
+
+f = open(path+"syslog","r")
 l = f.readlines()
 
 def unzip(li):
@@ -15,8 +18,9 @@ def getentry(s,year=datetime.datetime.today().year):
    entrytime = datetime.datetime.strptime(timestring,"%Y %b %d %X")
    return (entrytime,xs[4],xs[5])
 
-print(l[:3])
-dd = dict(zip(["Time","Entry","Attr"],unzip(map(getentry,l[:3]))))
+#print(l[:3])
+dd = dict(zip(["Time","Entry","Attr"],unzip(map(getentry,l))))
 data = pd.DataFrame(dd)
-print(data)
+print(data.head())
 #print(unzip(getentry(l[0])))
+print(data.groupby(['Entry']).count())
