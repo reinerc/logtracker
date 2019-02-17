@@ -21,7 +21,9 @@ def getentry(s,year=datetime.datetime.today().year):
 #print(l[:3])
 dd = dict(zip(["Time","Entry","Attr"],unzip(map(getentry,l))))
 data = pd.DataFrame(dd)
+
 print(data.head())
 #print(unzip(getentry(l[0])))
+print(data.groupby(['Time','Entry']).count())
 print(data.groupby(['Entry']).count())
 print(data[data['Entry'].str.contains("CRON")])
