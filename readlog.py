@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+import gzip
 import sys
 
 
@@ -21,8 +22,17 @@ filename = path+"syslog"
 #f = open(path+"syslog", "r")
 
 
+def gopen(filename,mode="r"):
+  if filename.endswith(".gz"):
+    print("gzip")
+    return gzip.open(filename,mode)
+  else:
+    print("no gzip")
+    return open(filename,mode)
+
 def unzip(li):
-  return tuple(map(list, zip(*li)))
+  liste = list(li)
+  return tuple(map(list, zip(*liste)))
 
 year = datetime.datetime.today().year
 
@@ -36,16 +46,17 @@ def getentry(s,year=datetime.datetime.today().year):
 def readlog(inputlog):
    "read lines from file or stream inputlog and returns a dataframe"
    l = inputlog.readlines()
+   print(l)
    dd = dict(zip(["Time", "Tag", "Attr"], unzip(map(getentry, l))))
    return pd.DataFrame(dd)
 
 if len(sys.argv) == 1:
-  f = open(filename,"r")
+  f = gopen(filename,"rt")
 else:
   if sys.argv[1] == "-":
     f = sys.stdin
   else:
-    f = open(sys.argv[1],"r")
+    f = gopen(sys.argv[1],"rt")
 data = readlog(f)
 
 print(data.head())
