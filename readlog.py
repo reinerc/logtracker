@@ -5,13 +5,21 @@ import numpy as np
 
 import sys
 
+
+
+
+#_plot = True
+_plot = False
+
+#
+# Default file
+#
+
 #path = "/var/log/"
 path = ""
+filename = path+"syslog"
+#f = open(path+"syslog", "r")
 
-_plot = True
-
-f = open(path+"syslog", "r")
-l = f.readlines()
 
 def unzip(li):
   return tuple(map(list, zip(*li)))
@@ -25,8 +33,20 @@ def getentry(s,year=datetime.datetime.today().year):
    return (entrytime, xs[4], xs[5])
 
 #print(l[:3])
-dd = dict(zip(["Time", "Tag", "Attr"], unzip(map(getentry, l))))
-data = pd.DataFrame(dd)
+def readlog(inputlog):
+   "read lines from file or stream inputlog and returns a dataframe"
+   l = inputlog.readlines()
+   dd = dict(zip(["Time", "Tag", "Attr"], unzip(map(getentry, l))))
+   return pd.DataFrame(dd)
+
+if len(sys.argv) == 1:
+  f = open(filename,"r")
+else:
+  if sys.argv[1] == "-":
+    f = sys.stdin
+  else:
+    f = open(sys.argv[1],"r")
+data = readlog(f)
 
 print(data.head())
 #print(unzip(getentry(l[0])))
