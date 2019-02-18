@@ -8,6 +8,8 @@ import sys
 #path = "/var/log/"
 path = ""
 
+_plot = True
+
 f = open(path+"syslog", "r")
 l = f.readlines()
 
@@ -33,3 +35,10 @@ print(data.groupby(['Time', 'Tag']).count())
 #print(data[data['Tag'].str.contains("CRON")])
 
 print (sys.argv)
+
+if _plot:
+   tl = data.groupby(['Time']).count()['Tag']
+   tl.cumsum().plot()
+   tl.plot(style='ro')
+   plt.show()
+   
