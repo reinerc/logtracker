@@ -23,9 +23,10 @@ def plot_hist_and_timeline(h,tl):
   gs = gridspec.GridSpec(2, 2)
 
   ax = fig.add_subplot(gs[0, :])
-  ax.plot(tl)
-  ax.set_ylabel('YLabel0')
-  ax.set_xlabel('XLabel0')
+# ax.plot(tl)
+# ax.set_ylabel('YLabel0')
+# ax.set_xlabel('XLabel0')
+  tl.plot(style='ro',ax=ax)
 
   ax2 = fig.add_subplot(gs[1,1])
   h.plot(kind='barh',ax=ax2) 

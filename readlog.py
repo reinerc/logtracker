@@ -3,14 +3,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+import re
 import gzip
 import sys
 
+_plot = True
+#_plot = False
 
-
-
-#_plot = True
-_plot = False
+if _plot:
+  import visual
 
 #
 # Default file
@@ -24,10 +25,10 @@ filename = path+"syslog"
 
 def gopen(filename,mode="r"):
   if filename.endswith(".gz"):
-    print("gzip")
+#    print("gzip")
     return gzip.open(filename,mode)
   else:
-    print("no gzip")
+ #   print("no gzip")
     return open(filename,mode)
 
 def unzip(li):
@@ -46,7 +47,7 @@ def getentry(s,year=datetime.datetime.today().year):
 def readlog(inputlog):
    "read lines from file or stream inputlog and returns a dataframe"
    l = inputlog.readlines()
-   print(l)
+#   print(l)
    dd = dict(zip(["Time", "Tag", "Attr"], unzip(map(getentry, l))))
    return pd.DataFrame(dd)
 
@@ -69,7 +70,10 @@ print (sys.argv)
 
 if _plot:
    tl = data.groupby(['Time']).count()['Tag']
-   tl.cumsum().plot()
-   tl.plot(style='ro')
-   plt.show()
-   
+#   tl.cumsum().plot()
+#   tl.plot(style='ro')
+#   plt.show()
+   data2 = data.copy()
+   data2['Tag'] = data2['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
+   h = data2.groupby(['Tag']).count()['Tag']
+   visual.plot_hist_and_timeline(h,tl)
