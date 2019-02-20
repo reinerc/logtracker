@@ -76,9 +76,16 @@ if _plot:
    data2 = data.copy()
    data2['Tag'] = data2['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
    h = data2.groupby(['Tag']).count()['Tag']
-   visual.plot_hist_and_timeline(h,tl)
+   
    dd = data2.groupby(['Time','Tag']).count()['Tag']
    df = dd.unstack().fillna(0)
+
+   visual.plot_sep_df(data2)
+   visual.plot_sep_df(data2,1)
+   visual.plot_sep_df(df)
+   sys.exit(0)
+
+   visual.plot_hist_and_timeline(h,tl)
 
    df.plot()
    plt.show()

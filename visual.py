@@ -35,3 +35,12 @@ def plot_hist_and_timeline(h,tl):
 
   plt.show()
 
+def plot_sep_df(df,partsize=4):
+  parts = int(len(df.columns) / partsize)
+  lastsize = len(df.columns) % partsize
+  if lastsize:
+    frames = parts + 1
+  else:
+    frames = parts
+
+  print((len(df.columns),":",parts,lastsize,frames,partsize))
