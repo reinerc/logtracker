@@ -80,8 +80,8 @@ if _plot:
    dd = data2.groupby(['Time','Tag']).count()['Tag']
    df = dd.unstack().fillna(0)
 
-   visual.plot_sep_df(data2)
-   visual.plot_sep_df(data2,1)
+#   visual.plot_sep_df(data2)
+#   visual.plot_sep_df(data2,1)
    visual.plot_sep_df(df)
    sys.exit(0)
 

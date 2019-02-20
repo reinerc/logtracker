@@ -36,6 +36,9 @@ def plot_hist_and_timeline(h,tl):
   plt.show()
 
 def plot_sep_df(df,partsize=4):
+  size =len(df.columns)
+  if size < partsize:
+    partsize = size
   parts = int(len(df.columns) / partsize)
   lastsize = len(df.columns) % partsize
   if lastsize:
@@ -44,3 +47,17 @@ def plot_sep_df(df,partsize=4):
     frames = parts
 
   print((len(df.columns),":",parts,lastsize,frames,partsize))
+  print(df.columns)
+  for i in range(0,size,partsize):
+     print(df.columns[i:i+partsize],i)
+     ax = plt.subplot(frames,1,int(i / partsize)+1)
+     print(df[df.columns[i:i+partsize]].head())
+     dd = df[df.columns[i:i+partsize]]
+     print(dd.head())
+     dd.plot(style="o",ax=ax)
+
+  if lastsize:
+     ax = plt.subplot(frames,1,frames)
+     print(df.columns[-lastsize:])
+     df[df.columns[-lastsize:]].plot(style="o",ax=ax)
+  plt.show()   
