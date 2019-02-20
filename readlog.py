@@ -77,3 +77,10 @@ if _plot:
    data2['Tag'] = data2['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
    h = data2.groupby(['Tag']).count()['Tag']
    visual.plot_hist_and_timeline(h,tl)
+   dd = data2.groupby(['Time','Tag']).count()['Tag']
+   df = dd.unstack().fillna(0)
+
+   df.plot()
+   plt.show()
+   df.cumsum().plot()   
+   plt.show()
