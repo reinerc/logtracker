@@ -59,16 +59,19 @@ else:
   else:
     f = gopen(sys.argv[1],"rt")
 data = readlog(f)
-
+data['Tag_noID'] = data['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
 print(data.head())
 #print(unzip(getentry(l[0])))
-print(data.groupby(['Time', 'Tag']).count())
+#print(data.groupby(['Time', 'Tag']).count())
 #print(data.groupby(['Tag']).count())
 #print(data[data['Tag'].str.contains("CRON")])
-
+print(data.groupby(['Tag_noID','Tag']).count())
 print (sys.argv)
 
 if _plot:
+   ax=data[data['Tag_noID']=='NetworkManager[]:'].groupby(['Time','Tag']).count()['Tag'].unstack().fillna(0).cumsum().plot()
+   data[data['Tag_noID']=='kernel:'].groupby(['Time','Tag']).count()['Tag'].unstack().fillna(0).plot(style='o',ax=ax)
+   plt.show()
    tl = data.groupby(['Time']).count()['Tag']
 #   tl.cumsum().plot()
 #   tl.plot(style='ro')
