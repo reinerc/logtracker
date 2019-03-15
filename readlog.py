@@ -38,17 +38,21 @@ def unzip(li):
 year = datetime.datetime.today().year
 
 def getentry(s,year=datetime.datetime.today().year):
+  try:
    xs = s.split(" ", 5)
    timestring = str(year)+' '+' '.join(xs[0:3])
    entrytime = datetime.datetime.strptime(timestring, "%Y %b %d %X")
    return (entrytime, xs[4], xs[5])
+  except:
+   # skip syntactic incorrect lines
+   return None
 
 #print(l[:3])
 def readlog(inputlog):
    "read lines from file or stream inputlog and returns a dataframe"
    l = inputlog.readlines()
 #   print(l)
-   dd = dict(zip(["Time", "Tag", "Attr"], unzip(map(getentry, l))))
+   dd = dict(zip(["Time", "Tag", "Attr"], unzip(filter(None,map(getentry, l)))))
    return pd.DataFrame(dd)
 
 if len(sys.argv) == 1:
