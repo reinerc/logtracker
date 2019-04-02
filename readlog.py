@@ -8,7 +8,7 @@ import gzip
 import sys
 
 _plot = True
-#_plot = False
+_plot = False
 
 if _plot:
   import visual
@@ -39,7 +39,7 @@ year = datetime.datetime.today().year
 
 def getentry(s,year=datetime.datetime.today().year):
   try:
-   xs = s.split(" ", 5)
+   xs = s.split(maxsplit= 5)
    timestring = str(year)+' '+' '.join(xs[0:3])
    entrytime = datetime.datetime.strptime(timestring, "%Y %b %d %X")
    return (entrytime, xs[4], xs[5])
@@ -63,6 +63,7 @@ else:
   else:
     f = gopen(sys.argv[1],"rt")
 data = readlog(f)
+print(data.head())
 data['Tag_noID'] = data['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
 print(data.head())
 #print(unzip(getentry(l[0])))
