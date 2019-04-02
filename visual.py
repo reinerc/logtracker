@@ -1,16 +1,5 @@
 """
-===============
-Aligning Labels
-===============
 
-Aligning xlabel and ylabel using `Figure.align_xlabels` and
-`Figure.align_ylabels`
-
-`Figure.align_labels` wraps these two functions.
-
-Note that the xlabel "XLabel1 1" would normally be much closer to the
-x-axis, and "YLabel1 0" would be much closer to the y-axis of their
-respective axes.
 """
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -36,6 +25,10 @@ def plot_hist_and_timeline(h,tl):
   plt.show()
 
 def plot_sep_df(df,partsize=4):
+  """
+   Plot the Data of the DataFrame df in
+   differend subplots
+  """
   size =len(df.columns)
   if size < partsize:
     partsize = size
@@ -55,9 +48,13 @@ def plot_sep_df(df,partsize=4):
      dd = df[df.columns[i:i+partsize]]
      print(dd.head())
      dd.plot(style="o",ax=ax)
+     plt.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0.3)
 
   if lastsize:
      ax = plt.subplot(frames,1,frames)
      print(df.columns[-lastsize:])
      df[df.columns[-lastsize:]].plot(style="o",ax=ax)
+     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.3)
+    
+
   plt.show()   
