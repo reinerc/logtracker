@@ -8,7 +8,7 @@ import gzip
 import sys
 
 _plot = True
-_plot = False
+#_plot = False
 
 if _plot:
   import visual
@@ -55,47 +55,54 @@ def readlog(inputlog):
    dd = dict(zip(["Time", "Tag", "Attr"], unzip(filter(None,map(getentry, l)))))
    return pd.DataFrame(dd)
 
-if len(sys.argv) == 1:
-  f = gopen(filename,"rt")
-else:
-  if sys.argv[1] == "-":
-    f = sys.stdin
+
+if __name__ == "__main__":
+
+  if len(sys.argv) == 1:
+    f = gopen(filename,"rt")
   else:
-    f = gopen(sys.argv[1],"rt")
-data = readlog(f)
-print(data.head())
-data['Tag_noID'] = data['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
-print(data.head())
-#print(unzip(getentry(l[0])))
-#print(data.groupby(['Time', 'Tag']).count())
-#print(data.groupby(['Tag']).count())
-#print(data[data['Tag'].str.contains("CRON")])
-print(data.groupby(['Tag_noID','Tag']).count())
-print (sys.argv)
+    if sys.argv[1] == "-":
+      f = sys.stdin
+    else:
+      f = gopen(sys.argv[1],"rt")
+  data = readlog(f)
+  print(data.head())
+  data['Tag_noID'] = data['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
+  print(data.head())
+  #print(unzip(getentry(l[0])))
+  #print(data.groupby(['Time', 'Tag']).count())
+  #print(data.groupby(['Tag']).count())
+  #print(data[data['Tag'].str.contains("CRON")])
+  print(data.groupby(['Tag_noID','Tag']).count())
+  print (sys.argv)
+  
+  if _plot:
+     try:
+       ax=data[data['Tag_noID']=='NetworkManager[]:'].groupby(['Time','Tag']).count()['Tag'].unstack().fillna(0).cumsum().plot()
+       data[data['Tag_noID']=='kernel:'].groupby(['Time','Tag']).count()['Tag'].unstack().fillna(0).plot(style='o',ax=ax)
+       plt.show()
+     except:
+       pass #if logfile is not syslog
 
-if _plot:
-   ax=data[data['Tag_noID']=='NetworkManager[]:'].groupby(['Time','Tag']).count()['Tag'].unstack().fillna(0).cumsum().plot()
-   data[data['Tag_noID']=='kernel:'].groupby(['Time','Tag']).count()['Tag'].unstack().fillna(0).plot(style='o',ax=ax)
-   plt.show()
-   tl = data.groupby(['Time']).count()['Tag']
-#   tl.cumsum().plot()
-#   tl.plot(style='ro')
-#   plt.show()
-   data2 = data.copy()
-   data2['Tag'] = data2['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
-   h = data2.groupby(['Tag']).count()['Tag']
-   
-   dd = data2.groupby(['Time','Tag']).count()['Tag']
-   df = dd.unstack().fillna(0)
-
-#   visual.plot_sep_df(data2)
-#   visual.plot_sep_df(data2,1)
-   visual.plot_sep_df(df)
-   sys.exit(0)
-
-   visual.plot_hist_and_timeline(h,tl)
-
-   df.plot()
-   plt.show()
-   df.cumsum().plot()   
-   plt.show()
+     tl = data.groupby(['Time']).count()['Tag']
+  #   tl.cumsum().plot()
+  #   tl.plot(style='ro')
+  #   plt.show()
+     data2 = data.copy()
+     data2['Tag'] = data2['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
+     h = data2.groupby(['Tag']).count()['Tag']
+     
+     dd = data2.groupby(['Time','Tag']).count()['Tag']
+     df = dd.unstack().fillna(0)
+  
+  #   visual.plot_sep_df(data2)
+  #   visual.plot_sep_df(data2,1)
+     visual.plot_sep_df(df)
+     sys.exit(0)
+  
+     visual.plot_hist_and_timeline(h,tl)
+  
+     df.plot()
+     plt.show()
+     df.cumsum().plot()   
+     plt.show()
