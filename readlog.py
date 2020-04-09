@@ -23,7 +23,7 @@ filename = path+"syslog"
 #f = open(path+"syslog", "r")
 
 
-def gopen(filename,mode="r"):
+def gopen(filename,mode="rb"):
   if filename.endswith(".gz"):
 #    print("gzip")
     return gzip.open(filename,mode)
@@ -50,7 +50,7 @@ def getentry(s,year=datetime.datetime.today().year):
 #print(l[:3])
 def readlog(inputlog):
    "read lines from file or stream inputlog and returns a dataframe"
-   l = inputlog.readlines()
+   l = [ elem.decode(errors="replace") for elem in inputlog.readlines()]
 #   print(l)
    dd = dict(zip(["Time", "Tag", "Attr"], unzip(filter(None,map(getentry, l)))))
    return pd.DataFrame(dd)
@@ -59,16 +59,18 @@ def readlog(inputlog):
 if __name__ == "__main__":
 
   if len(sys.argv) == 1:
-    f = gopen(filename,"rt")
+    f = gopen(filename,"rb")
   else:
     if sys.argv[1] == "-":
       f = sys.stdin
     else:
-      f = gopen(sys.argv[1],"rt")
+      f = gopen(sys.argv[1],"rb")
   data = readlog(f)
   print(data.head())
   data['Tag_noID'] = data['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
   print(data.head())
+  
+  sys.exit(0)
   #print(unzip(getentry(l[0])))
   #print(data.groupby(['Time', 'Tag']).count())
   #print(data.groupby(['Tag']).count())
