@@ -50,6 +50,10 @@ def getentry(s,year=datetime.datetime.today().year):
 #print(l[:3])
 def readlog(inputlog):
    "read lines from file or stream inputlog and returns a dataframe"
+
+   if type(inputlog) == str: # if filename
+       inputlog = open(inputlog,"rb")
+       
    l = [ elem.decode(errors="replace") for elem in inputlog.readlines()]
 #   print(l)
    dd = dict(zip(["Time", "Tag", "Attr"], unzip(filter(None,map(getentry, l)))))
@@ -69,6 +73,7 @@ if __name__ == "__main__":
   print(data.head())
   data['Tag_noID'] = data['Tag'].apply(lambda s:re.sub("\[.*\]","[]",s))
   print(data.head())
+  print(data.shape)
   
   sys.exit(0)
   #print(unzip(getentry(l[0])))
